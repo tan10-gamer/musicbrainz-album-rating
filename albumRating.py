@@ -22,6 +22,23 @@ def search_album(album_title, artist_name):
         print(f"Error occurred while searching for the album: {error}")
         return []
 
+# Function to display the search results in a user-friendly format
+def display_search(search):
+    if not search:
+        print("No albums found.")
+        return
+
+    print("\nSearch Results:")
+
+    for index, album in enumerate(search[:5], start=1):
+        title = album.get("title", "N/A")
+        artist_credit = album.get("artist-credit", [])
+        artist_name = artist_credit[0].get("name", "N/A") if artist_credit else "N/A"
+        release_date = album.get("first-release-date", "N/A")
+
+        print(f"{index}. Title: {title} | Artist: {artist_name} | Release Date: {release_date}")
+
+
     
 # get_valid_rating function to ensure the user inputs a valid rating between 1 and 10
 def get_valid_rating():
