@@ -38,6 +38,15 @@ def display_search(search):
 
         print(f"{index}. Title: {title} | Artist: {artist_name} | Release Date: {release_date}")
 
+# allow the user to search for an album
+
+def search_for_album():
+    album_title = input("Enter the album title: ")
+    artist_name = input("Enter the artist name: ")
+    results = search_album(album_title, artist_name)
+    display_search(results) 
+
+
 
     
 # get_valid_rating function to ensure the user inputs a valid rating between 1 and 10
