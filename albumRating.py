@@ -19,8 +19,8 @@ def search_album(album_title, artist_name):
         return data.get("release-groups", [])
 
     except requests.exceptions.RequestException as error:
-        print(f"Error occurred while searching for the album: {error}")
-        return []
+        print(f"MusicBrainz API request failed: {error}")
+        return None
 
 # Function to display the search results in a user-friendly format
 def display_search(search):
@@ -44,9 +44,37 @@ def search_for_album():
     album_title = input("Enter the album title: ")
     artist_name = input("Enter the artist name: ")
     results = search_album(album_title, artist_name)
+
+    if results is None:
+        print("An error occurred while searching for the album.")
+        return
+    
     display_search(results) 
 
+    selected_album = select_album(results)  # Call the select_album function to allow the user to select an album from the search results
+    if selected_album:
+        print("Title:", selected_album.get("title", "N/A"))
+        print("MusicBrainz ID:", selected_album.get("id", "N/A"))
 
+
+# allow the user to select an album 
+def select_album(search):
+    if not search:
+        return None
+
+    while True:
+        try:
+            choice = int(input(f"Select an album (1-{min(len(search), 5)}): "))
+            if 1 <= choice <= min(len(search), 5):
+                select_album = search[choice - 1]
+                return select_album
+            else:
+                print(f"Invalid choice. Please select a number between 1 and {min(len(search), 5)}.")
+
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+    
 
     
 # get_valid_rating function to ensure the user inputs a valid rating between 1 and 10

@@ -15,3 +15,10 @@ So I added if __name__ == "__main__": condition so that only that main only runs
 Solution:
 I had to change it to album["artist-credit"][0]["name"] and use first-release-date for the release date.
 
+4. While testing one of the search features, I encountered a 503 Server Error. Which prevented the program from retrieving album information.
+Solution:
+Updated the error handling messages to output the appropriate error message.
+
+5. During testing, I intentionally typed in albums that did not exist. And the ouput message was correct, "No Album found". However, I had print statements in my display_search function and select_album function that both returned "No Album found". So the user would receive a duplicated output message.
+Solution:
+Removed the print statement from select_album to just return an empty list is no album was found from the display_search function.
