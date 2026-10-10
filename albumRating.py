@@ -1,3 +1,28 @@
+import requests
+
+# Search for an album using the MusicBrainz API
+def search_album(album_title, artist_name):
+    url = "https://musicbrainz.org/ws/2/release-group/"             # MusicBrainz API endpoint for release groups
+    headers = {
+        "User-Agent": "AlbumRatingApp/1.0 (tanchirenda10@gmail.com)"        # User-Agent header to identify the application making the request
+    }
+
+    params = {
+        "query":f'releasegroup:"{album_title}" AND artist:"{artist_name}"', "fmt":"json"        # Query parameters for the API request, including the album title and artist name, and specifying the response format as JSON
+    }
+
+    # Try-except block to handle potential errors during the API request
+    try:
+        response = requests.get(url, headers=headers, params=params, timeout=10)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        data = response.json()
+        return data.get("release-groups", [])
+
+    except requests.exceptions.RequestException as error:
+        print(f"Error occurred while searching for the album: {error}")
+        return []
+
+    
 # get_valid_rating function to ensure the user inputs a valid rating between 1 and 10
 def get_valid_rating():
     while True:
@@ -82,21 +107,23 @@ def album_rating():
 
     return album_title
 
-album_rating()   # calls the album_rating function to start the program
+# album_rating()   # calls the album_rating function to start the program
 
 
 
 # main program. Loop to ask the user if they want to rate another album or exit the program
-albums = []
-album = album_rating()
-albums.append(album)
+if __name__ == "__main__":   # condition used to only run the following code if the script is executed directly.
+    print("Welcome to the Album Rating Program!")
+    albums = []
+    album = album_rating()
+    albums.append(album)
 
-while True:
-    next_album = input("\nWould you like to rate another album? (yes/no): ")
-    if next_album == "yes":
-            album_rating()
-    elif next_album == "no":
-        print("Thank you for using the album rating program!")
-        break
-    else:
-        print("Invalid input. Please enter 'yes' or 'no'.")
+    while True:
+        next_album = input("\nWould you like to rate another album? (yes/no): ")
+        if next_album == "yes":
+                album_rating()
+        elif next_album == "no":
+            print("Thank you for using the album rating program!")
+            break
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
