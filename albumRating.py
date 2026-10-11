@@ -102,6 +102,19 @@ def search_for_album():
             else:
                 print("No tags found.")
 
+        # allow the user to rate the selected album
+        print("\nRate the selected album:")
+        rating = get_valid_rating()
+
+        # display the rating summary
+
+        print("\nRating Summary:")
+        print("Album: ", selected_album.get("title", "N/A"))
+        print("Rating:", rating, "/10")
+
+        # provide a recommendation based on the rating
+        recommend_album(rating)
+
 
 # allow the user to select an album 
 def select_album(search):
