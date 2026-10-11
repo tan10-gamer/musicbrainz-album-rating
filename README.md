@@ -29,5 +29,10 @@ Changed my plan a bit to show information that would be relevant to the album ra
 
 7. When trying to display genres and tags the program was returning an empty list. After looking at the MusicBrainz documentation I misinterpreted the API paramater and used "include" instead if "inc". 
 Solution:
-Used correct request parameter
+Used correct request parameter.
+
+8. During testing I occasionally ran into a HTTP 503 Error, which prevented the application from retrieving album information.
+Solution:
+I added error handling by added logic that would automatically retry whenever the server is temporarily unavailable. Also added a short delay between API requests to observe MusicBrainz's rate limit.
+
 
