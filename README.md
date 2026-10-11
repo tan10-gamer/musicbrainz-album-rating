@@ -1,5 +1,5 @@
 # musicbrainz-album-rating
-Python album rating application that integrates the MusicBrainz API to search for album information and allow users to rate and view albums
+Python album rating application that integrates the MusicBrainz API to search for albums, retrieve information, and allow users to rate, store and view albums.
 
 ## Issues
 
@@ -34,5 +34,13 @@ Used correct request parameter.
 8. During testing I occasionally ran into a HTTP 503 Error, which prevented the application from retrieving album information.
 Solution:
 I added error handling by added logic that would automatically retry whenever the server is temporarily unavailable. Also added a short delay between API requests to observe MusicBrainz's rate limit.
+
+9. Issue with user visibility.
+Solution:
+Added separators and delays for the convenience of users.
+
+10. A second json file was created when the application was executed from a different working directory.
+Solution:
+Ran program from terminal.
 
 
