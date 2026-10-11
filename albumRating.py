@@ -1,4 +1,6 @@
 import requests
+import json 
+import time
 
 # Search for an album using the MusicBrainz API
 def search_album(album_title, artist_name):
@@ -33,14 +35,23 @@ def get_album_details(album_id):
         "inc": "artist-credits+genres+tags", "fmt": "json"
     }   # Include additional information such as artist credits, genres, and tags in the response
 
-    try:
-        response = requests.get(url, headers=headers, params=params, timeout=10)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        return response.json()
+    for _ in range(3):  # Retry the request up to 3 times
+        try:
+            response = requests.get(url, headers=headers, params=params, timeout=10)
 
-    except requests.exceptions.RequestException as error:
-        print(f"MusicBrainz API request failed: {error}")
-        return None
+            if response.status_code == 503:  # Handle rate limiting (HTTP 503)
+                print("MusicBrainz temporarily unavailable. Retrying in 5 seconds...")
+                time.sleep(5)  # Wait for 5 seconds before retrying
+                continue
+
+            response.raise_for_status()  # Raise an exception for HTTP errors
+            return response.json()
+
+        except requests.exceptions.RequestException as error:
+            print(f"MusicBrainz API request failed: {error}")
+            return None
+    print("MusicBrainz still unavailable. Please try again later.")
+    return None
 
 
 
@@ -115,6 +126,20 @@ def search_for_album():
         # provide a recommendation based on the rating
         recommend_album(rating)
 
+        # store the album rating in a JSON file
+        artist = selected_album.get("artist-credit", [])
+        artist_name = artist[0].get("name", "N/A") if artist else "N/A"
+
+        rated_album = {
+            "id": selected_album.get("id", "N/A"),
+            "title": selected_album.get("title", "N/A"),
+            "artist": artist_name,
+            "rating": rating
+        }
+
+        save_album_rating(rated_album)
+        print("\nAlbum rating saved to album_ratings.json.")
+
 
 # allow the user to select an album 
 def select_album(search):
@@ -133,7 +158,20 @@ def select_album(search):
         except ValueError:
             print("Invalid input. Please enter a number.")
 
+# functions to load and save album ratings to a JSON file
+def load_album_ratings():
+    try:
+        with open("album_ratings.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
     
+def save_album_rating(album):
+    albums = load_album_ratings()
+    albums.append(album)
+
+    with open("album_ratings.json", "w") as file:
+        json.dump(albums, file, indent=4)
 
     
 # get_valid_rating function to ensure the user inputs a valid rating between 1 and 10
