@@ -22,6 +22,28 @@ def search_album(album_title, artist_name):
         print(f"MusicBrainz API request failed: {error}")
         return None
 
+# retrieve detailed information about a selected album
+def get_album_details(album_id):
+    url = f"https://musicbrainz.org/ws/2/release-group/{album_id}"  # MusicBrainz API endpoint for a specific release group
+    headers = {
+        "User-Agent": "AlbumRatingApp/1.0 (tanchirenda10@gmail.com)"
+    }
+
+    params = {
+        "inc": "artist-credits+genres+tags", "fmt": "json"
+    }   # Include additional information such as artist credits, genres, and tags in the response
+
+    try:
+        response = requests.get(url, headers=headers, params=params, timeout=10)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        return response.json()
+
+    except requests.exceptions.RequestException as error:
+        print(f"MusicBrainz API request failed: {error}")
+        return None
+
+
+
 # Function to display the search results in a user-friendly format
 def display_search(search):
     if not search:
@@ -55,6 +77,30 @@ def search_for_album():
     if selected_album:
         print("Title:", selected_album.get("title", "N/A"))
         print("MusicBrainz ID:", selected_album.get("id", "N/A"))
+
+        # retrieves additional details for the selected album using album's MusicBrainz ID
+        album_details = get_album_details(selected_album.get("id"))
+
+        if album_details:
+            print("\nAlbum Details:")
+            print("Type: ", album_details.get("primary-type", "N/A"))
+            print("First Release Date: ", album_details.get("first-release-date", "N/A"))
+
+            genres = album_details.get("genres", [])
+            print("\nGenres: ")
+            if genres:
+                for genre in genres[:5]:
+                    print("-", genre.get("name", "N/A"))
+            else:
+                print("No genres found.")
+
+            tags = album_details.get("tags", [])
+            print("\nTags: ")
+            if tags:
+                for tag in tags[:5]:
+                    print("-", tag.get("name", "N/A"))
+            else:
+                print("No tags found.")
 
 
 # allow the user to select an album 

@@ -22,3 +22,12 @@ Updated the error handling messages to output the appropriate error message.
 5. During testing, I intentionally typed in albums that did not exist. And the ouput message was correct, "No Album found". However, I had print statements in my display_search function and select_album function that both returned "No Album found". So the user would receive a duplicated output message.
 Solution:
 Removed the print statement from select_album to just return an empty list is no album was found from the display_search function.
+
+6. Originally in my plan I wanted to use the display additionally information endpoint to show artist name, and album title. However, I discovered that was redundant and I was already duplicating information from my display_search function.
+Solution:
+Changed my plan a bit to show information that would be relevant to the album rating program such as genres.
+
+7. When trying to display genres and tags the program was returning an empty list. After looking at the MusicBrainz documentation I misinterpreted the API paramater and used "include" instead if "inc". 
+Solution:
+Used correct request parameter
+
