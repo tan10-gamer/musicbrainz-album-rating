@@ -10,5 +10,35 @@
         "title": "DAMN.",
         "artist": "Kendrick Lamar",
         "rating": 5
+    },
+    {
+        "id": "3ee3e2bb-2584-4f74-ba06-cdecc370a1ba",
+        "title": "Deadbeat",
+        "artist": "Tame Impala",
+        "rating": 4
+    },
+    {
+        "id": "40a8bbb9-667a-4878-beb7-05b4fdffa92d",
+        "title": "Oh yeah?",
+        "artist": "Steve Lacy",
+        "rating": 8
+    },
+    {
+        "id": "88e46272-f172-42ad-ae4a-6df5dbfb5ae0",
+        "title": "Hot Pink",
+        "artist": "Doja Cat",
+        "rating": 8
+    },
+    {
+        "id": "4dd05327-b70f-4d7b-b950-367ecdd29b66",
+        "title": "Gettin\u2019 Old",
+        "artist": "Luke Combs",
+        "rating": 6
+    },
+    {
+        "id": "b91cbc13-7db2-405b-bc1d-e4757edb4ce0",
+        "title": "HABIBTI",
+        "artist": "Drake",
+        "rating": 2
     }
 ]

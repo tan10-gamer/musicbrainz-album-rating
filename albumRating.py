@@ -14,15 +14,24 @@ def search_album(album_title, artist_name):
     }
 
     # Try-except block to handle potential errors during the API request
-    try:
-        response = requests.get(url, headers=headers, params=params, timeout=10)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        data = response.json()
-        return data.get("release-groups", [])
+    for _ in range(3):  # Retry the request up to 3 times
+        try:
+            response = requests.get(url, headers=headers, params=params, timeout=10)
 
-    except requests.exceptions.RequestException as error:
-        print(f"MusicBrainz API request failed: {error}")
-        return None
+            if response.status_code == 503:  # Handle temporary unavailability (HTTP 503)
+                print("MusicBrainz temporarily unavailable. Retrying in 5 seconds...")
+                time.sleep(5)  # Wait for 5 seconds before retrying
+                continue
+
+            response.raise_for_status()  # Raise an exception for HTTP errors
+            data = response.json()
+            return data.get("release-groups", [])
+
+        except requests.exceptions.RequestException as error:
+            print(f"MusicBrainz API request failed: {error}")
+            return None
+    print("MusicBrainz still unavailable. Please try again later.")
+    return None
 
 # retrieve detailed information about a selected album
 def get_album_details(album_id):
@@ -39,7 +48,7 @@ def get_album_details(album_id):
         try:
             response = requests.get(url, headers=headers, params=params, timeout=10)
 
-            if response.status_code == 503:  # Handle rate limiting (HTTP 503)
+            if response.status_code == 503:  # Handle temporary unavailability (HTTP 503)
                 print("MusicBrainz temporarily unavailable. Retrying in 5 seconds...")
                 time.sleep(5)  # Wait for 5 seconds before retrying
                 continue
@@ -173,6 +182,36 @@ def save_album_rating(album):
     with open("album_ratings.json", "w") as file:
         json.dump(albums, file, indent=4)
 
+# display rated albums from the JSON file
+def display_rated_albums():
+    albums = load_album_ratings()
+
+    if not albums:
+        print("No rated albums found.")
+        return
+
+    print("\nRated Albums:")
+    for index, album in enumerate(albums, start=1):
+        print(f"{index}. {album.get('title', 'N/A')}")
+        print("Artist:", album.get("artist", "N/A"))
+        print("Rating:", album.get("rating", "N/A"), "/10")
+
+#display the top-rated albums from the JSON file
+def display_top_albums():
+    albums = load_album_ratings()
+
+    if not albums:
+        print("No rated albums found.")
+        return
+
+    # Sort albums by rating in descending order
+    top_albums = sorted(albums, key=lambda album: album["rating"], reverse=True)
+
+    print("\nTop Rated Albums:")
+    for index, album in enumerate(top_albums, start=1):
+        print(f"{index}. {album.get('title', 'N/A')}")
+        print("Artist:", album.get("artist", "N/A"))
+        print("Rating:", album.get("rating", "N/A"), "/10")
     
 # get_valid_rating function to ensure the user inputs a valid rating between 1 and 10
 def get_valid_rating():
