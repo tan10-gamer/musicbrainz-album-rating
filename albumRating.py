@@ -23,7 +23,10 @@ def search_album(album_title, artist_name):
                     print("MusicBrainz temporarily unavailable. Retrying in 5 seconds...")
                     time.sleep(5)  # Wait for 5 seconds before retrying
                     continue
+
+                print("MusicBrainz still unavailable. Please try again later.")
                 return None
+                
             
             response.raise_for_status()  # Raise an exception for HTTP errors
             data = response.json()
@@ -32,8 +35,6 @@ def search_album(album_title, artist_name):
         except requests.exceptions.RequestException as error:
             print(f"MusicBrainz API request failed: {error}")
             return None
-    print("MusicBrainz still unavailable. Please try again later.")
-    return None
 
 # retrieve detailed information about a selected album
 def get_album_details(album_id):
@@ -55,6 +56,7 @@ def get_album_details(album_id):
                     print("MusicBrainz temporarily unavailable. Retrying in 5 seconds...")
                     time.sleep(5)  # Wait for 5 seconds before retrying
                     continue
+                print("MusicBrainz still unavailable. Please try again later.")
                 return None
 
             response.raise_for_status()  # Raise an exception for HTTP errors
@@ -63,9 +65,6 @@ def get_album_details(album_id):
         except requests.exceptions.RequestException as error:
             print(f"MusicBrainz API request failed: {error}")
             return None
-    print("MusicBrainz still unavailable. Please try again later.")
-    return None
-
 
 
 # Function to display the search results in a user-friendly format
@@ -93,6 +92,10 @@ def search_for_album():
 
     if results is None:
         print("An error occurred while searching for the album.")
+        return
+
+    if not results:
+        print("No albums found.")
         return
     
     display_search(results)
